@@ -1,6 +1,5 @@
 package com.example.turismo
 
-import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,9 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,13 +35,37 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TurismoTheme() {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    TurismoApp()
+            TurismoApp()
+        }
+    }
+}
+
+@Composable
+fun TurismoApp() {
+    var light by remember {
+        mutableStateOf(false)
+    }
+    TurismoTheme(light) {
+        Scaffold(topBar = {
+            Row(modifier = Modifier.height(50.dp), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center) {
+                Text(
+                    "Pontos Turisticos de São Paulo", style = TextStyle(
+                        fontFamily = FontFamily.Cursive,
+                        fontSize = 25.sp, textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier.padding(6.dp)
+                )
+                IconButton(onClick = { light = !light }) {
+                    Icon(imageVector = if (light) Icons.Filled.LightMode else Icons.Filled.DarkMode,
+                        contentDescription = "Theme")
+                }
+        }
+        }
+        ) {
+            LazyColumn(modifier = Modifier.padding(top = 15.dp)) {
+                items(turisticos) {
+                    CaTurismo(turistico = it)
                 }
             }
         }
@@ -52,18 +73,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TurismoApp() {
-    Text("Pontos Turisticos de São Paulo", style = TextStyle(fontFamily = FontFamily.Cursive,
-            fontSize = 27.sp, textAlign = TextAlign.Center))
-    LazyColumn(modifier = Modifier.padding(top = 35.dp)){
-        items(turisticos){
-            CaTurismo(turistico = it)
-        }
-    }
-}
-
-@Composable
-fun CaTurismo(turistico: Turistico, modifier: Modifier = Modifier ){
+fun CaTurismo(turistico: Turistico ){
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = 15.dp, horizontal = 6.dp), elevation = 10.dp) {
@@ -102,10 +112,6 @@ fun CoTurismo(@StringRes nome: Int, @StringRes sobre: Int, @DrawableRes foto: In
     }
 }
 
-
-
-
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
@@ -113,17 +119,3 @@ fun DefaultPreview() {
         TurismoApp()
     }
 }
-
-/*
-td
-
-var islight = false
-@Composable
-fun ChangeLight(){
-    var light by remember { mutableStateOf(false) }
-    Button(onClick = { light = !light }) {
-        Text("change light")
-    }
-    islight = light
-}
- */
